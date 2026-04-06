@@ -1,36 +1,68 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../Context/AuthContext";
+import { searchTitles } from "../services/api";
 
 const Navbar = () => {
+  const { logout } = useContext(AuthContext);
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/?search=${query}`);
-  };
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
 
+    if (value.trim() === "") {
+      setResults([]);
+      return;
+    }
+
+    try {
+      const { data } = await searchTitles(value);
+      setResults(data.titles.primaryTitle || []);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  };
+const logOutGuest = ()=>{
+    logout();
+    navigate('/signup')
+}
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-zinc-900 shadow-md">
-      
-      {/* Left - Search */}
-      <form onSubmit={handleSearch}>
+      <div className="relative">
         <input
           type="text"
           placeholder="Search movies..."
           className="px-3 py-1 rounded bg-zinc-800 text-white outline-none focus:ring-2 focus:ring-red-500"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleSearch}
         />
-      </form>
-
-      {/* Right - Links */}
+        {results.length > 0 && (
+          <div className="absolute top-10 left-0 w-64 bg-zinc-800 text-white rounded shadow-lg max-h-80 overflow-y-auto">
+            {results.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-2 p-2 hover:bg-zinc-700 cursor-pointer"
+              >
+                <img
+                  src={item.primaryImage?.url}
+                  alt={item.primaryTitle}
+                  className="w-10 h-14 object-cover rounded"
+                />
+                <span>{item.primaryTitle}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <div className="flex gap-6 text-sm font-medium">
         <span onClick={() => navigate("/")} className="cursor-pointer hover:text-red-500">Home</span>
-        <span className="cursor-pointer hover:text-red-500">TV Shows</span>
-        <span className="cursor-pointer hover:text-red-500">Movies</span>
-        <span className="cursor-pointer hover:text-red-500">Video Games</span>
+        <span onClick={() => navigate("/tvshows")} className="cursor-pointer hover:text-red-500">TV Shows</span>
+        <span onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</span>
+        <span onClick={() => navigate("/video-games")} className="cursor-pointer hover:text-red-500">Video Games</span>
+        <span onClick={logOutGuest} className="cursor-pointer hover:text-red-500">Log Out</span>
       </div>
     </nav>
   );

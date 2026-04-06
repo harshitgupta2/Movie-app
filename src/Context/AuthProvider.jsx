@@ -1,12 +1,13 @@
 import { useState } from "react";
 import AuthContext from "./AuthContext";
-// import { useNavigate } from "react-router";
+
+
 
 
 
 
  export const Authprovider = ({children})=>{
-    // const navigate = useNavigate()
+
     const[user,setUser]= useState(()=>{    
      try {
     const savedUser = localStorage.getItem("user");
@@ -21,7 +22,6 @@ import AuthContext from "./AuthContext";
     const guest = { name: "Guest" };
     setUser(guest);
     localStorage.setItem("user", JSON.stringify(guest));
-    // navigate('/')
     
   };
 

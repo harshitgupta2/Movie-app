@@ -8,7 +8,8 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const data = await getTitle();
-        setResponse(data.data.titles || []);
+        setResponse(data.data.titles);
+        console.log(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -28,21 +29,21 @@ const Home = () => {
             className="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
           >
             <img
-              src={movie.primaryImage?.url}
+              src={movie.primaryImage.url}
               alt={movie.primaryTitle}
               className="w-full h-64 object-cover"
             />
             <div className="p-4 flex flex-col gap-2">
-              {/* Title */}
               <h2 className="text-lg font-semibold line-clamp-1">
                 {movie.primaryTitle}
               </h2>
+               <p className="text-gray-400 text-sm line-clamp-3">
+                {movie.plot}
+              </p>
               <p className="text-yellow-400 text-sm font-medium">
-                ⭐ {movie.rating?.aggregateRating || "N/A"}
+                ⭐ {movie.rating?.aggregateRating}
               </p>
-              <p className="text-gray-400 text-sm line-clamp-3">
-                {movie.plot || "No description available"}
-              </p>
+             
             </div>
           </div>
         ))}

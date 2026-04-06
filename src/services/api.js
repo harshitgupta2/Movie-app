@@ -12,3 +12,8 @@ export const getTitle = async()=>{
         console.log(error);
     }
 }
+export const searchTitles = async (query) => {
+  return api.get('/search/titles', {
+    params: { query }
+  });
+};
