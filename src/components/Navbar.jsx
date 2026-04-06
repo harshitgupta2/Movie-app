@@ -50,7 +50,7 @@ const Navbar = () => {
                 className="flex items-center gap-2 p-2 hover:bg-zinc-700 cursor-pointer"
                 onClick={() => {
                   setQuery(item.primaryTitle);
-                  setResults([]); // close dropdown
+                  setResults([]); 
                 }}
               >
                 <img
