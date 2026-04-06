@@ -9,6 +9,7 @@ const Navbar = () => {
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
+
   const handleSearch = async (e) => {
     const value = e.target.value;
     setQuery(value);
@@ -20,31 +21,37 @@ const Navbar = () => {
 
     try {
       const { data } = await searchTitles(value);
-      setResults(data.titles.primaryTitle || []);
+      setResults(data.titles);
     } catch (error) {
-      console.error("Search error:", error);
+      console.error( error);
     }
   };
-const logOutGuest = ()=>{
+
+  const logOutGuest = () => {
     logout();
-    navigate('/signup')
-}
+    navigate("/signup");
+  };
+
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-zinc-900 shadow-md">
+    <nav className="flex items-center justify-between px-6 py-4 bg-zinc-900 shadow-md text-white">
       <div className="relative">
         <input
           type="text"
           placeholder="Search movies..."
-          className="px-3 py-1 rounded bg-zinc-800 text-white outline-none focus:ring-2 focus:ring-red-500"
+          className="px-4 py-2 rounded-full bg-zinc-800 text-white outline-none focus:ring-2 focus:ring-red-500 w-64"
           value={query}
           onChange={handleSearch}
         />
         {results.length > 0 && (
-          <div className="absolute top-10 left-0 w-64 bg-zinc-800 text-white rounded shadow-lg max-h-80 overflow-y-auto">
+          <div className="absolute top-12 left-0 w-64 bg-zinc-800 rounded-lg shadow-lg max-h-80 overflow-y-auto z-50">
             {results.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center gap-2 p-2 hover:bg-zinc-700 cursor-pointer"
+                onClick={() => {
+                  setQuery(item.primaryTitle);
+                  setResults([]); // close dropdown
+                }}
               >
                 <img
                   src={item.primaryImage?.url}
@@ -58,11 +65,21 @@ const logOutGuest = ()=>{
         )}
       </div>
       <div className="flex gap-6 text-sm font-medium">
-        <span onClick={() => navigate("/")} className="cursor-pointer hover:text-red-500">Home</span>
-        <span onClick={() => navigate("/tvshows")} className="cursor-pointer hover:text-red-500">TV Shows</span>
-        <span onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</span>
-        <span onClick={() => navigate("/video-games")} className="cursor-pointer hover:text-red-500">Video Games</span>
-        <span onClick={logOutGuest} className="cursor-pointer hover:text-red-500">Log Out</span>
+        <span onClick={() => navigate("/")} className="cursor-pointer hover:text-red-500">
+          Home
+        </span>
+        <span onClick={() => navigate("/tvshows")} className="cursor-pointer hover:text-red-500">
+          TV Shows
+        </span>
+        <span onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">
+          Movies
+        </span>
+        <span onClick={() => navigate("/video-games")} className="cursor-pointer hover:text-red-500">
+          Video Games
+        </span>
+        <span onClick={logOutGuest} className="cursor-pointer hover:text-red-500">
+          Log Out
+        </span>
       </div>
     </nav>
   );
